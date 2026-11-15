@@ -11,8 +11,22 @@ Ringkasan apa yang sudah jalan, apa yang belum, dan buktinya. Diperbarui manual 
 | M2 | Indikator teknikal sendiri | `pipeline/indicators.py`; verifikasi silang vs library `ta` dan tabel Wilder (RSI/ATR/ADX/MACD/Bollinger cocok persis) |
 | M3 | Skor komposit + sinyal + level | `pipeline/scoring.py`, `config/scoring.yaml`; keluaran `indicators/*.json`, `signals/latest.json` |
 | M4 | Mesin simulasi + evaluasi | `pipeline/sim.py`, `pipeline/evaluate.py`; `sim/portfolio.json`, `eval/scorecard.json` |
-| M5 | Frontend 8 halaman | `web/src/`; `npx tsc --noEmit` bersih, `npm run build` sukses (520 modul) |
+| M5 | Frontend 8 halaman | `web/src/`; `npx tsc --noEmit` bersih, `npm run build` sukses (520 modul), smoke test Chromium 8/8 rute + 6 tab lulus tanpa error konsol |
 | M6 | Otomasi + deploy | `.github/workflows/daily.yml` (uji → pipeline → commit → build → Cloudflare Pages) |
+
+## Verifikasi UI (terakhir)
+
+`python tools/smoke_web.py` (Chromium headless via Playwright, melawan `npm run build` + `vite preview`):
+
+```
+OK  / /screener /saham/BBCA /simulasi /scorecard /backtest /panduan /pengaturan   (0 error konsol)
+OK  baris tabel screener = 45   | urut skor menurun   | klik baris → /saham/PTBA
+OK  tab Chart(canvas=14) Teknikal Fundamental Risiko Riwayat Penjelasan
+HASIL: SEMUA LULUS
+```
+
+Satu bug nyata ditemukan dan diperbaiki lewat uji ini: halaman Scorecard sempat menabrak aturan urutan hook React
+(error #310) karena `useMemo` diletakkan setelah `return` awal. Tangkapan layar tersimpan di `docs/screenshots/`.
 
 ## Hasil pipeline terakhir
 
