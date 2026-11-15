@@ -59,18 +59,67 @@ bagus/jelek — dan naikkan `params_version` setiap kali berubah agar tiap kelua
 5. Mesin simulasi mengubah sinyal Beli menjadi order: ukuran posisi dari risiko 2% ekuitas ÷ jarak stop, dibatasi bobot maksimum per saham.
 6. `evaluate.py` menghitung return vs IHSG, profit factor, expectancy, drawdown, dan memeriksa kriteria kelayakan.
 
-## Deploy (dijalankan oleh pemilik repo)
+## Hosting & akses dari perangkat lain
 
-Tidak ada kredensial di repositori ini; rahasia disimpan sebagai GitHub Secrets.
+Aplikasi ini **sepenuhnya statis** (HTML + JS + berkas JSON di `web/public/data`), jadi hosting apa pun yang menyajikan
+berkas statis bisa dipakai. Tidak ada server atau basis data yang perlu dijalankan.
 
-1. Buat repo GitHub, lalu `git remote add origin …` dan `git push -u origin main`.
-2. Buat proyek Cloudflare Pages bernama `idx-insight` (mode Direct Upload).
-3. Tambahkan **Secrets** repo: `CLOUDFLARE_API_TOKEN` (izin *Cloudflare Pages: Edit*) dan `CLOUDFLARE_ACCOUNT_ID`.
-4. Workflow `.github/workflows/daily.yml` berjalan Senin–Jumat 17:30 WIB: uji → pipeline → commit data → build → deploy.
-   Bisa juga dijalankan manual dari tab *Actions* (`workflow_dispatch`).
+### A. Coba dulu di HP lewat Wi-Fi (tanpa hosting, 2 menit)
 
-Alternatif tanpa Actions: hubungkan repo ke Cloudflare Pages (build command `npm run build`, root `web`), lalu jalankan
-pipeline terjadwal di mesin Anda dan push hasilnya.
+```bash
+cd web
+npm run build
+npx vite preview --host        # catat alamat http://192.168.x.x:4173
+```
+
+Buka alamat itu dari HP yang tersambung ke Wi-Fi yang sama. Kalau Windows menanyakan izin firewall, pilih **Allow**.
+Cara ini hanya untuk mencoba; begitu PC mati, situs tidak bisa diakses.
+
+### B. Cloudflare Pages + GitHub Actions (disarankan — otomatis tiap hari)
+
+1. **Buat repo GitHub** (mis. `idx-insight`), lalu dari folder proyek:
+   ```bash
+   git remote add origin https://github.com/<user>/idx-insight.git
+   git branch -M main
+   git push -u origin main
+   ```
+2. **Buat akun Cloudflare** (gratis) → menu **Workers & Pages** → **Create** → **Pages** → **Upload assets / Direct Upload**
+   → nama proyek **`idx-insight`** (harus sama dengan `--project-name` di workflow).
+3. **Catat Account ID**: halaman Workers & Pages → **Account ID** (kanan bawah).
+4. **Buat API token**: My Profile → **API Tokens** → Create Token → *Custom token* dengan izin
+   **Account → Cloudflare Pages → Edit**. Simpan nilainya (hanya tampil sekali).
+5. Di repo GitHub: **Settings → Secrets and variables → Actions → New repository secret**, tambahkan:
+   - `CLOUDFLARE_API_TOKEN`
+   - `CLOUDFLARE_ACCOUNT_ID`
+6. Tab **Actions** → pilih *Harian — pipeline & deploy* → **Run workflow**.
+7. Setelah selesai, situs hidup di `https://idx-insight.pages.dev` (alamat tepatnya tampil di halaman proyek Pages).
+
+Workflow berjalan Senin–Jumat 17:30 WIB: uji → pipeline → commit data → build → deploy. Repo **boleh privat** (ini
+keunggulan Cloudflare Pages dibanding GitHub Pages). Batas gratis: 500 build/bulan dan bandwidth tak terbatas.
+
+### C. GitHub Pages (alternatif tanpa akun Cloudflare)
+
+1. Push repo seperti langkah B.1 — repo harus **publik** (Pages dari repo privat butuh GitHub Pro).
+2. Repo → **Settings → Pages → Source: GitHub Actions**.
+3. Tab **Actions** → *Deploy ke GitHub Pages* → **Run workflow**.
+4. Situs hidup di `https://<user>.github.io/<repo>/`. Base path diisi otomatis dari nama repo (`BASE_PATH` di workflow),
+   jadi nama repo apa pun tetap benar.
+
+Workflow `pages.yml` juga terpicu setiap push ke `main` yang mengubah `web/**` — termasuk commit data harian dari
+`daily.yml`, sehingga situs ikut terbarui sendiri.
+
+### D. Memperbarui data
+
+- Otomatis: biarkan jadwal Actions berjalan (butuh secrets pada opsi B; opsi C cukup repo publik).
+- Manual: jalankan `python -m pipeline.run` di komputer Anda, lalu `git add web/public/data && git commit && git push`.
+  Penyedia hosting akan membangun ulang sendiri.
+
+### E. Domain sendiri (opsional)
+
+- Cloudflare Pages → proyek → **Custom domains** → Add → ikuti instruksi DNS.
+- GitHub Pages → **Settings → Pages → Custom domain** → arahkan CNAME ke `<user>.github.io`.
+
+Tidak ada kredensial di dalam repositori ini — semua rahasia disimpan sebagai GitHub Secrets.
 
 ## Keterbatasan yang diketahui
 

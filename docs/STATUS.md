@@ -12,7 +12,7 @@ Ringkasan apa yang sudah jalan, apa yang belum, dan buktinya. Diperbarui manual 
 | M3 | Skor komposit + sinyal + level | `pipeline/scoring.py`, `config/scoring.yaml`; keluaran `indicators/*.json`, `signals/latest.json` |
 | M4 | Mesin simulasi + evaluasi | `pipeline/sim.py`, `pipeline/evaluate.py`; `sim/portfolio.json`, `eval/scorecard.json` |
 | M5 | Frontend 8 halaman | `web/src/`; `npx tsc --noEmit` bersih, `npm run build` sukses (520 modul), smoke test Chromium 8/8 rute + 6 tab lulus tanpa error konsol |
-| M6 | Otomasi + deploy | `.github/workflows/daily.yml` (uji → pipeline → commit → build → Cloudflare Pages) |
+| M6 | Otomasi + deploy | `.github/workflows/daily.yml` (Cloudflare Pages) & `.github/workflows/pages.yml` (GitHub Pages, base path otomatis) |
 
 ## Verifikasi UI (terakhir)
 
@@ -27,6 +27,11 @@ HASIL: SEMUA LULUS
 
 Satu bug nyata ditemukan dan diperbaiki lewat uji ini: halaman Scorecard sempat menabrak aturan urutan hook React
 (error #310) karena `useMemo` diletakkan setelah `return` awal. Tangkapan layar tersimpan di `docs/screenshots/`.
+
+Build sub-path (dipakai GitHub Pages `/<repo>/`) juga diuji: `BASE_PATH=/idx-insight/ npm run build:pages`, lalu
+`SMOKE_BASE=http://[::1]:4174/idx-insight python tools/smoke_web.py` → **SEMUA LULUS**. Uji ini menemukan satu bug lagi:
+`BrowserRouter` tanpa `basename` membuat semua rute jatuh ke halaman Dashboard saat situs berada di sub-path — sudah
+diperbaiki di `src/main.tsx`.
 
 ## Hasil pipeline terakhir
 

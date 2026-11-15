@@ -3,12 +3,13 @@
 Pakai: jalankan `npx vite preview --port 4173` di web/, lalu `python tools/smoke_web.py`.
 Menandai gagal bila ada error konsol, error halaman, atau teks yang diharapkan tidak muncul.
 """
+import os
 import sys
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-BASE = "http://[::1]:4173"
+BASE = os.environ.get("SMOKE_BASE", "http://[::1]:4173")
 SHOTS = Path(__file__).resolve().parent.parent / "docs" / "screenshots"
 
 CASES = [
