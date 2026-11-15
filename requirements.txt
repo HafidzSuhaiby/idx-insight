@@ -1,0 +1,6 @@
+# Runtime pipeline IDX Insight (Python 3.11+)
+yfinance>=0.2.50
+PyYAML>=6.0
+
+# Opsional: hanya untuk verifikasi silang indikator (tools/crosscheck_indicators.py)
+# ta>=0.11

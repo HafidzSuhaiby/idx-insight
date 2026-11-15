@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+web/dist/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rahasia — jangan pernah di-commit
+.env
+.env.*
+*.key
+credentials.json

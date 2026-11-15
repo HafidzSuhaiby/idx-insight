@@ -1,0 +1,54 @@
+# Aturan skor IDX Insight. Semua parameter di sini, tidak ada yang hardcode di kode.
+# points = kurva interpolasi linear: [[nilai_indikator, skor_0_100], ...] (nilai harus urut naik).
+# Bobot/ambang ini TITIK AWAL; ubah hanya berdasarkan hasil walk-forward, bukan satu hasil.
+params_version: v1.0.0
+
+categories:
+  trend:       {weight: 30, label: "Tren"}
+  momentum:    {weight: 25, label: "Momentum"}
+  volume:      {weight: 15, label: "Volume"}
+  risk:        {weight: 10, label: "Risiko/Volatilitas"}
+  fundamental: {weight: 20, label: "Fundamental"}
+
+factors:
+  trend:
+    ema_stack:   {weight: 40, points: [[-4, 0], [0, 50], [4, 100]], desc: "Keselarasan harga dengan EMA20/50/200 (-4..+4)"}
+    ema50_slope: {weight: 20, points: [[-5, 0], [0, 50], [5, 100]], desc: "Kemiringan EMA50 10 hari (%)"}
+    adx:         {weight: 20, points: [[10, 0], [20, 50], [30, 85], [45, 100]], desc: "ADX(14), kekuatan tren"}
+    ma_cross:    {weight: 20, points: [[-1, 0], [0, 50], [1, 100]], desc: "Golden(+1)/death(-1) cross EMA50-EMA200 dalam 10 hari"}
+  momentum:
+    rsi:           {weight: 25, points: [[20, 10], [35, 45], [45, 80], [60, 100], [70, 85], [80, 35], [90, 10]], desc: "RSI(14); 45-60 optimal, >75 jenuh beli"}
+    macd_hist_pct: {weight: 25, points: [[-1.5, 0], [0, 50], [1.5, 100]], desc: "Histogram MACD dalam % harga"}
+    stoch:         {weight: 15, points: [[10, 15], [20, 45], [50, 75], [80, 85], [90, 45], [97, 10]], desc: "Stochastic(14,3,3) %K lambat"}
+    roc20:         {weight: 20, points: [[-15, 0], [0, 50], [15, 100]], desc: "Rate of change 20 hari (%)"}
+    rs_ihsg:       {weight: 15, points: [[-15, 0], [0, 50], [15, 100]], desc: "Kekuatan relatif vs IHSG 60 hari (poin %)"}
+  volume:
+    volume_ratio: {weight: 45, points: [[0.3, 20], [0.8, 50], [1.5, 85], [3, 100], [6, 60]], desc: "Volume / rata-rata 20 hari"}
+    obv_net:      {weight: 30, points: [[-5, 0], [0, 50], [5, 100]], desc: "Akumulasi/distribusi bersih 20 hari (satuan hari volume rata-rata)"}
+    breakout:     {weight: 25, points: [[-1, 0], [0, 50], [1, 100]], desc: "Breakout(+1)/breakdown(-1) 20 hari dengan konfirmasi volume"}
+  risk:
+    atr_pct: {weight: 35, points: [[1, 100], [3, 70], [5, 40], [8, 0]], desc: "ATR(14) sebagai % harga (kecil lebih baik)"}
+    vol60:   {weight: 25, points: [[15, 100], [30, 70], [50, 40], [80, 0]], desc: "Volatilitas historis 60 hari (% tahunan)"}
+    mdd_1y:  {weight: 25, points: [[10, 100], [25, 60], [40, 25], [60, 0]], desc: "Drawdown maksimum 1 tahun (%, kecil lebih baik)"}
+    beta:    {weight: 15, points: [[0.3, 80], [1, 80], [1.6, 50], [2.2, 20]], desc: "Beta vs IHSG"}
+  fundamental:
+    per:        {weight: 25, points: [[0, 30], [5, 90], [12, 100], [20, 60], [30, 20], [50, 0]], desc: "PER (kali)"}
+    pbv:        {weight: 20, points: [[0, 40], [1, 90], [2, 100], [4, 50], [8, 0]], desc: "PBV (kali)"}
+    roe:        {weight: 20, points: [[0, 0], [8, 50], [15, 80], [25, 100]], desc: "ROE (%)"}
+    der:        {weight: 15, points: [[0, 100], [0.5, 80], [1, 60], [2, 20], [4, 0]], desc: "DER (kali)"}
+    eps_growth: {weight: 10, points: [[-30, 0], [0, 50], [20, 100]], desc: "Pertumbuhan EPS (%)"}
+    div_yield:  {weight: 10, points: [[0, 40], [2, 70], [5, 100], [9, 80]], desc: "Dividend yield (%)"}
+
+signal:
+  buy: 70        # skor >= 70 -> Beli (bila rezim bukan Risk-off dan lolos likuiditas)
+  hold: 40       # 40-69 Tahan, < 40 Hindari
+  exit_score: 40 # skor < ini -> keluar dari posisi
+
+levels:
+  stop_atr_mult: 2.0     # stop = entry - 2 x ATR
+  target_rr: 2.0         # target minimal 1:2
+  min_rr: 1.5            # rasio < ini -> sinyal diturunkan jadi Tahan
+  max_hold_days: 20      # batas waktu holding (hari bursa)
+
+regime:
+  netral_position_factor: 0.5   # rezim Netral -> jumlah posisi dikurangi separuh

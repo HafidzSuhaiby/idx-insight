@@ -1,0 +1,67 @@
+# Universe IDX Insight
+# Konstituen LQ45 periode efektif 18 Nov 2026 – 29 Jan 2027
+# Sumber: pengumuman BEI No. Peng-00218/BEI.POP/11-2026 (evaluasi insidental, 11 Nov 2026),
+#         disusun dari pemberitaan pasar (bisnis.com, investor.id, kontan.co.id).
+# STATUS: perlu verifikasi ke lampiran resmi IDX sebelum dipakai serius.
+# Nama perusahaan & sektor diambil otomatis dari Yahoo Finance saat pipeline jalan (tidak ditulis manual).
+benchmark: "^JKSE"
+benchmark_label: "IHSG"
+
+lq45:
+  - AADI
+  - ADMR
+  - ADRO
+  - AKRA
+  - AMMN
+  - AMRT
+  - ANTM
+  - ASII
+  - BBCA
+  - BBNI
+  - BBRI
+  - BBTN
+  - BMRI
+  - BRPT
+  - BUMI
+  - CPIN
+  - CUAN
+  - DEWA
+  - EMTK
+  - ERAA
+  - ESSA
+  - EXCL
+  - GGRM
+  - GOTO
+  - HRTA
+  - ICBP
+  - INCO
+  - INDF
+  - INDY
+  - INKP
+  - ISAT
+  - ITMG
+  - JPFA
+  - KLBF
+  - MBMA
+  - MDKA
+  - MEDC
+  - PGAS
+  - PTBA
+  - PWON
+  - SMGR
+  - TLKM
+  - UNTR
+  - UNVR
+  - WIFI
+
+watchlist: []          # tambahan kode di luar LQ45, mis. ["ACES", "MAPI"]
+
+filters:
+  min_avg_value_20d: 5000000000   # Rp5 miliar rata-rata nilai transaksi 20 hari
+  min_history_days: 250           # < ini -> tidak direkomendasikan
+  max_stale_days: 5               # jarak hari kalender data terakhir vs hari bursa terakhir
+
+# Kalender libur bursa: diturunkan dari data benchmark (^JKSE) supaya tidak pernah basi.
+# Tambahkan tanggal penutupan khusus di bawah bila perlu (format YYYY-MM-DD).
+holiday_source: benchmark_index
+extra_holidays: []

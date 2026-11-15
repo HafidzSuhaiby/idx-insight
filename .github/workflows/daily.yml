@@ -1,0 +1,73 @@
+name: Harian — pipeline & deploy
+
+# 10:30 UTC = 17:30 WIB, Senin–Jumat (setelah penutupan bursa).
+on:
+  schedule:
+    - cron: '30 10 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      no_replay:
+        description: 'Lewati replay historis (lebih cepat)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: harian
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Pasang dependensi
+        run: pip install -r requirements.txt
+
+      - name: Uji ujung-ke-ujung (3 saham, direktori sementara)
+        run: python tests/test_pipeline.py
+
+      - name: Jalankan pipeline penuh
+        run: python -m pipeline.run ${{ inputs.no_replay && '--no-replay' || '' }}
+
+      - name: Commit data baru
+        id: commit
+        run: |
+          git config user.name  "idx-insight-bot"
+          git config user.email "idx-insight-bot@users.noreply.github.com"
+          git add web/public/data
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan data."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "data: perbarui keluaran pipeline $(date -u +%Y-%m-%d)"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build frontend
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+
+      - name: Terbitkan ke Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy web/dist --project-name=idx-insight --branch=main
