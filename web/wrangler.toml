@@ -1,0 +1,9 @@
+# Konfigurasi untuk Cloudflare Workers (Workers Builds / integrasi Git).
+# Tanpa berkas ini Worker menyajikan HTML sumber mentah (yang menunjuk ke /src/main.tsx)
+# sehingga halaman kosong. Dengan `directory = "./dist"` Worker menyajikan hasil `npm run build`.
+name = "idx-insight"
+compatibility_date = "2025-11-01"
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"

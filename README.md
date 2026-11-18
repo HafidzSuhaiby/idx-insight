@@ -121,6 +121,18 @@ Workflow `pages.yml` juga terpicu setiap push ke `main` yang mengubah `web/**` �
 
 Tidak ada kredensial di dalam repositori ini — semua rahasia disimpan sebagai GitHub Secrets.
 
+### F. Halaman kosong setelah deploy (gejala: console menyebut `main.tsx` dan "MIME type of \"\"")
+
+Artinya hosting menyajikan `index.html` **sumber** (yang menunjuk `/src/main.tsx`), bukan hasil build. Perbaiki pengaturan
+build di dashboard hosting:
+
+- Root/Base directory: `web`
+- Build command: `npm run build`
+- Output/Deploy: `dist` (Cloudflare Pages) atau `npx wrangler deploy` (Cloudflare Worker — `web/wrangler.toml` sudah
+  menunjuk `./dist` dan menangani rute SPA)
+
+Halaman yang benar memuat berkas `/assets/index-*.js`, bukan `/src/main.tsx`.
+
 ## Keterbatasan yang diketahui
 
 - Sumber data Yahoo Finance: bisa kosong/terlambat, terutama metadata fundamental emiten kecil.
