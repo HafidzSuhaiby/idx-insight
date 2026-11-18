@@ -5,13 +5,9 @@ name: Deploy ke GitHub Pages
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'web/**'
-      - 'pipeline/**'
-      - 'config/**'
-      - '.github/workflows/pages.yml'
+
+# Hanya manual: jalur utama adalah Cloudflare Worker (daily.yml).
+# Aktifkan lewat Settings → Pages → Source: GitHub Actions bila ingin memakai jalur ini.
 
 permissions:
   contents: read

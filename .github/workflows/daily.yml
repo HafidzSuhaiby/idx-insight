@@ -65,9 +65,10 @@ jobs:
           npm ci
           npm run build
 
-      - name: Terbitkan ke Cloudflare Pages
+      - name: Terbitkan ke Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy web/dist --project-name=idx-insight --branch=main
+          workingDirectory: web
+          command: deploy
