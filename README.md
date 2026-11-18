@@ -75,7 +75,7 @@ npx vite preview --host        # catat alamat http://192.168.x.x:4173
 Buka alamat itu dari HP yang tersambung ke Wi-Fi yang sama. Kalau Windows menanyakan izin firewall, pilih **Allow**.
 Cara ini hanya untuk mencoba; begitu PC mati, situs tidak bisa diakses.
 
-### B. Cloudflare Workers + GitHub Actions (disarankan — otomatis tiap hari)
+### B. Cloudflare Workers + GitHub (disarankan — otomatis tiap hari, tanpa token)
 
 1. **Buat repo GitHub** (mis. `idx-insight`), lalu dari folder proyek:
    ```bash
@@ -83,21 +83,17 @@ Cara ini hanya untuk mencoba; begitu PC mati, situs tidak bisa diakses.
    git branch -M main
    git push -u origin main
    ```
-2. **Buat akun Cloudflare** (gratis) → **Workers & Pages** → **Create** → **Worker** → nama **`idx-insight`**
-   (harus sama dengan `name` di `web/wrangler.toml`). Jangan sambungkan ke Git — build dilakukan GitHub Actions,
-   dan `wrangler deploy` mengunggah `web/dist` hasil `npm run build`.
-3. **Catat Account ID**: halaman Workers & Pages → **Account ID** (kanan bawah).
-4. **Buat API token**: My Profile → **API Tokens** → Create Token → templat **Edit Cloudflare Workers**
-   (berisi izin *Workers Scripts: Edit* + *Account Settings: Read*). Simpan nilainya (hanya tampil sekali).
-5. Di repo GitHub: **Settings → Secrets and variables → Actions → New repository secret**, tambahkan:
-   - `CLOUDFLARE_API_TOKEN`
-   - `CLOUDFLARE_ACCOUNT_ID`
-6. Tab **Actions** → pilih *Harian — pipeline & deploy* → **Run workflow**.
-7. Setelah selesai, situs hidup di `https://idx-insight.<akun>.workers.dev`.
+2. **Buat Worker** di Cloudflare: **Workers & Pages → Create → Worker**, nama **`idx-insight`** (harus sama dengan
+   `name` di `web/wrangler.toml`), lalu sambungkan ke repo GitHub lewat **Settings → Build → Git connection**.
+3. Isi **Build configuration** persis seperti ini:
+   - Root directory: `web`
+   - Build command: `npm run build`
+   - Deploy command: `npx wrangler deploy`  ← membaca `web/wrangler.toml`, yang mengunggah `./dist`
+4. Setiap push ke `main` memicu build & deploy. Situs hidup di `https://idx-insight.<akun>.workers.dev`.
+   Tidak ada token atau secrets yang perlu dibuat.
 
-Workflow berjalan Senin–Jumat 17:30 WIB: uji → pipeline → commit data → build → `wrangler deploy`. Repo **boleh privat**.
-Batas gratis Workers: 100.000 permintaan/hari — jauh di atas kebutuhan, dan aset statis tidak dihitung sebagai request
-berbayar.
+Workflow GitHub Actions (`daily.yml`) hanya menjalankan uji + pipeline + commit data harian Senin–Jumat 17:30 WIB.
+Commit itu memicu Cloudflare membangun ulang, jadi data dan situs selalu sinkron.
 
 ### C. GitHub Pages (alternatif tanpa Cloudflare)
 

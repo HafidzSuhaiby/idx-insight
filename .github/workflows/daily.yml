@@ -59,16 +59,11 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
 
-      - name: Build frontend
+      - name: Build frontend (validasi tipe + build)
         working-directory: web
         run: |
           npm ci
           npm run build
 
-      - name: Terbitkan ke Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: web
-          command: deploy
+      # Deploy dilakukan Cloudflare Workers Builds dari commit ini (web/wrangler.toml → ./dist).
+      # Tidak perlu token/secrets di repo; lihat README bagian Hosting.
