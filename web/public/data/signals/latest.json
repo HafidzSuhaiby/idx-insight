@@ -1,1 +1,1 @@
-{"date":"2026-11-16","params_version":"v1.0.0","regime":{"state":"Risk-off","note":"IHSG di bawah EMA50, EMA50 di bawah EMA200","close":5320.98095703125,"ema50":5619.080797314159,"ema200":6455.393509591753},"items":[],"n_buy":0,"n_hold":38,"n_avoid":7}
+{"date":"2026-11-17","params_version":"v1.0.0","regime":{"state":"Risk-off","note":"IHSG di bawah EMA50, EMA50 di bawah EMA200","close":5304.7548828125,"ema50":5606.754290863114,"ema200":6443.9441249398715},"items":[],"n_buy":0,"n_hold":36,"n_avoid":9}

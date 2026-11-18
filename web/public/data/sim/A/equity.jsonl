@@ -246,4 +246,5 @@
 {"date":"2026-11-11","equity":1011713.9,"cash":1011713.9,"n_positions":0,"ihsg":5115.03515625,"phase":"replay","ihsg_norm":61.81,"equity_norm":101.17}
 {"date":"2026-11-12","equity":1011713.9,"cash":1011713.9,"n_positions":0,"ihsg":5250.89501953125,"phase":"replay","ihsg_norm":63.45,"equity_norm":101.17}
 {"date":"2026-11-13","equity":1011713.9,"cash":1011713.9,"n_positions":0,"ihsg":5344.40576171875,"phase":"replay","ihsg_norm":64.58,"equity_norm":101.17}
-{"date":"2026-11-16","equity":1011713.9,"cash":1011713.9,"n_positions":0,"ihsg":5320.98095703125,"phase":"live","ihsg_norm":64.3,"equity_norm":101.17}
+{"date":"2026-11-16","equity":1011713.9,"cash":1011713.9,"n_positions":0,"ihsg":5320.98095703125,"phase":"replay","ihsg_norm":64.3,"equity_norm":101.17}
+{"date":"2026-11-17","equity":1011713.9,"cash":1011713.9,"n_positions":0,"ihsg":5304.7548828125,"phase":"live","ihsg_norm":64.11,"equity_norm":101.17}
