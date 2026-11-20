@@ -9,9 +9,9 @@
 {"code":"HRTA","side":"beli","status":"direncanakan","date":"2025-11-10","for_date":"2025-11-11","lots":16,"stop":1175.0,"target":1895.0,"score":74.28,"params_version":"v1.0.0"}
 {"code":"HRTA","side":"beli","status":"terisi","date":"2025-11-11","lots":16,"price":1445.0,"cost":2312000.0,"fee":3468.0,"stop":1175.0,"target":1895.0,"score":74.28,"params_version":"v1.0.0"}
 {"code":"GOTO","side":"beli","status":"direncanakan","date":"2025-11-12","for_date":"2025-11-13","lots":361,"stop":54.0,"target":85.0,"score":79.16,"params_version":"v1.0.0"}
-{"code":"UNTR","side":"beli","status":"direncanakan","date":"2025-11-12","for_date":"2025-11-13","lots":1,"stop":26650.0,"target":31600.0,"score":75.26,"params_version":"v1.0.0"}
+{"code":"UNTR","side":"beli","status":"direncanakan","date":"2025-11-12","for_date":"2025-11-13","lots":1,"stop":26650.0,"target":31600.0,"score":75.27,"params_version":"v1.0.0"}
 {"code":"GOTO","side":"beli","status":"terisi","date":"2025-11-13","lots":361,"price":65.0,"cost":2346500.0,"fee":3519.75,"stop":54.0,"target":85.0,"score":79.16,"params_version":"v1.0.0"}
-{"code":"UNTR","side":"beli","status":"terisi","date":"2025-11-13","lots":1,"price":28325.0,"cost":2832500.0,"fee":4248.75,"stop":26650.0,"target":31600.0,"score":75.26,"params_version":"v1.0.0"}
+{"code":"UNTR","side":"beli","status":"terisi","date":"2025-11-13","lots":1,"price":28325.0,"cost":2832500.0,"fee":4248.75,"stop":26650.0,"target":31600.0,"score":75.27,"params_version":"v1.0.0"}
 {"code":"ESSA","side":"beli","status":"direncanakan","date":"2025-11-14","for_date":"2025-11-17","lots":39,"stop":580.0,"target":880.0,"score":77.36,"params_version":"v1.0.0"}
 {"code":"ESSA","side":"beli","status":"terisi","date":"2025-11-17","lots":39,"price":690.0,"cost":2691000.0,"fee":4036.5,"stop":580.0,"target":880.0,"score":77.36,"params_version":"v1.0.0"}
 {"code":"BMRI","side":"beli","status":"direncanakan","date":"2025-11-19","for_date":"2025-11-20","lots":5,"stop":4610.0,"target":5330.0,"score":70.18,"params_version":"v1.0.0"}
