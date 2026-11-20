@@ -32,11 +32,19 @@ jobs:
       - name: Pasang dependensi
         run: pip install -r requirements.txt
 
-      - name: Uji ujung-ke-ujung (3 saham, direktori sementara)
-        run: python tests/test_pipeline.py
-
       - name: Jalankan pipeline penuh
-        run: python -m pipeline.run ${{ inputs.no_replay && '--no-replay' || '' }}
+        # Uji jaringan terpisah (tests/test_pipeline.py) sengaja tidak dipakai di sini:
+        # ia mengunduh ulang 3 saham dan gagal karena throttle Yahoo dari IP runner,
+        # padahal pipeline penuh sudah memvalidasi seluruh univ. Verifikasi dilakukan
+        # pada keluaran (langkah berikutnya), bukan pada panggilan jaringan kedua.
+        run: |
+          python -m pipeline.run ${{ inputs.no_replay && '--no-replay' || '' }} || {
+            echo "percobaan 1 gagal, mengulang setelah 90 detik"; sleep 90
+            python -m pipeline.run ${{ inputs.no_replay && '--no-replay' || '' }}
+          }
+
+      - name: Verifikasi keluaran pipeline
+        run: python -c "import json,sys; m=json.load(open('web/public/data/meta.json')); print(m['as_of'], m['status'], f\"{m['universe_ok']}/{m['universe_total']} saham\", f\"error={m['n_errors']}\"); sys.exit(0 if m['status']=='ok' and m['universe_ok']>=40 else 1)"
 
       - name: Commit data baru
         id: commit
